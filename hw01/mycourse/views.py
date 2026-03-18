@@ -1,11 +1,10 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from django.core.serializers.json import DjangoJSONEncoder
-import json
+from django.http import JsonResponse
 from .models import Course_table
 
-# 1. 新增課程的 API
+# 新增課程的 API
 @api_view(['GET'])
 def addcourse(request):
     department = request.GET.get('Department', '')
@@ -20,14 +19,8 @@ def addcourse(request):
     
     return Response({"data": course_title + " insert!"}, status=status.HTTP_200_OK)
 
-# 2. 查詢課程列表的 API
+# 查詢課程列表的 API (已更新為老師要求的 JsonResponse)
 @api_view(['GET'])
 def courselist(request):
     courses = Course_table.objects.all().values()
-    return Response({"data":
-        json.dumps(
-            list(courses),
-            sort_keys = True,
-            indent = 1,
-            cls = DjangoJSONEncoder)},
-        status=status.HTTP_200_OK)
+    return JsonResponse(list(courses), safe=False)
