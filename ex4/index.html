@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>EX4 聖誕樹</title>
+</head>
+<body>
+    <h2>請按下 F12 打開開發者工具 (Developer Tools) 的 Console 來看聖誕樹！</h2>
+
+    <script>
+        // 主程式：呼叫畫樹的函式
+        function tree(n) {
+            let fullTree = ""; // 準備一個空的字串來收集整棵樹
+            fullTree += getTreeTop(n);
+            fullTree += getTreeBottom(n);
+            
+            // 最後一口氣把整棵樹印出來，就不會被瀏覽器摺疊了！
+            console.log(fullTree);
+        }
+
+        // 畫樹的上方 (樹葉)
+        function getTreeTop(n) {
+            let res = "";
+            for (let i = 1; i <= n; i++) {
+                // 每畫完一行，要在後面加上 \n (換行符號)
+                res += repeatchar(n - i, ' ') + repeatchar(2 * i - 1, '*') + '\n';
+            }
+            return res;
+        }
+
+        // 畫樹的下方 (樹幹)
+        function getTreeBottom(n) {
+            let res = "";
+            // 迴圈跑 n - 1 次，長度為 3
+            for (let i = 0; i < n - 1; i++) {
+                // 寬度 1 顆星，畫完一樣加上 \n (換行符號)
+                res += repeatchar(n - 1, ' ') + '*' + '\n';
+            }
+            return res;
+        }
+
+        // 產生重複字元的輔助函式
+        function repeatchar(n, arg_char) {
+            let result = '';
+            for (let i = 0; i < n; i++) {
+                result += arg_char;
+            }
+            return result;
+        }
+
+        // 執行：畫出高度為 4 的聖誕樹
+        tree(4);
+    </script>
+</body>
+</html>
