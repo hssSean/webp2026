@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>EX7 打字機消消樂 (地獄懲罰版)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #container {
+            font-size: 4rem;
+            letter-spacing: 5px;
+            font-family: monospace;
+            min-height: 120px;
+            word-break: break-all; /* 字太多時自動換行，避免破版 */
+        }
+    </style>
+</head>
+<body class="bg-light p-5 text-center">
+
+    <h2 class="text-danger fw-bold mb-3">EX7: 打字機消消樂 (懲罰版)</h2>
+    <p class="text-muted">
+        請敲擊畫面上的「第一個」英文字母來消除它。<br>
+        ⚠️ <b>注意：</b>如果連續打錯 3 次，除了原本會長出的字母外，還會遭受<b>額外暴增 3 個字母</b>的懲罰！
+    </p>
+    
+    <div id="container" tabindex="0" class="blockquote p-4 border border-danger rounded bg-white shadow text-primary fw-bold"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

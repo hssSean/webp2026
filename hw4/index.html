@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>HW4 景點觀光展覽資訊</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4 bg-light">
+    <div class="container bg-white p-4 rounded shadow-sm">
+        <h1 class="mb-4 text-primary fw-bold">景點觀光展覽資訊</h1>
+
+        <div class="mb-4">
+            <input type="text" id="searchInput" class="form-control form-control-lg border-primary" placeholder="請輸入展覽名稱關鍵字搜尋 (輸入完請按 Enter 或點擊旁邊空白處)..." onchange="searchData()">
+        </div>
+
+        <table id="csie" class="table table-striped table-hover border">
+            <thead class="table-dark">
+                <tr>
+                    <th width="40%">名稱</th>
+                    <th width="40%">地點</th>
+                    <th width="20%">票價</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+
+        <div class="d-flex justify-content-center align-items-center mt-4">
+            <button class="btn btn-outline-primary me-3 px-4" onclick="prevPage()">上一頁</button>
+            <span id="pageInfo" class="fw-bold text-secondary fs-5">1 / 1 頁</span>
+            <button class="btn btn-outline-primary ms-3 px-4" onclick="nextPage()">下一頁</button>
+        </div>
+    </div>
+
+    <script>
+        // 全域變數設定
+        let allData = [];      // 用來存放一開始從 API 抓下來的「所有資料」
+        let filteredData = []; // 用來存放經過搜尋過濾後的「目前資料」
+        let currentPage = 1;   // 目前頁碼
+        const itemsPerPage = 10; // 規定每頁顯示十筆資料
+
+        // 1. 網頁一載入，就透過 Ajax 取得資料
+        var openUrl = "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6";
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', openUrl, true);
+        xhr.send();
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                // 將抓下來的 JSON 字串轉成 JavaScript 陣列
+                allData = JSON.parse(this.responseText);
+                filteredData = allData; // 一開始沒有搜尋，過濾資料 = 全部資料
+                renderTable(); // 呼叫渲染表格的函式
+            }
+        };
+
+        // 2. 渲染表格與分頁資訊的核心函式
+        function renderTable() {
+            let tbody = document.getElementById("tableBody");
+            tbody.innerHTML = ""; // 先清空目前的表格內容
+
+            // 計算總頁數 (無條件進位)
+            let totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (totalPages === 0) totalPages = 1; // 避免搜尋不到東西時變成 0 頁
+            if (currentPage > totalPages) currentPage = totalPages; // 防呆機制
+
+            // 計算目前這一頁要抓取資料的陣列起點與終點
+            let startIndex = (currentPage - 1) * itemsPerPage;
+            let endIndex = startIndex + itemsPerPage;
+            
+            // 裁切出目前頁面要顯示的那 10 筆資料
+            let pageData = filteredData.slice(startIndex, endIndex);
+
+            // 將這 10 筆資料一一加入表格中
+            pageData.forEach(function(data) {
+                let row = tbody.insertRow(-1);
+                row.insertCell(0).innerHTML = data['title'];
+                row.insertCell(1).innerHTML = data['showInfo'][0]['location'];
+                row.insertCell(2).innerHTML = data['showInfo'][0]['price'];
+            });
+
+            // 更新下方的分頁文字資訊
+            document.getElementById("pageInfo").innerText = `${currentPage} / ${totalPages} 頁`;
+        }
+
+        // 3. 搜尋功能 (當輸入框失去焦點或按下 Enter 時觸發 onchange)
+        function searchData() {
+            // 取得輸入的關鍵字 (去除前後多餘空白)
+            let keyword = document.getElementById("searchInput").value.trim();
+            
+            if (keyword === "") {
+                filteredData = allData; // 如果輸入空白，就恢復顯示全部資料
+            } else {
+                // 利用 filter 篩選出名稱 (title) 中包含關鍵字的資料
+                filteredData = allData.filter(function(data) {
+                    return data.title.includes(keyword);
+                });
+            }
+            
+            currentPage = 1; // 搜尋後，一定要強制回到第 1 頁
+            renderTable();   // 重新渲染表格
+        }
+
+        // 4. 點擊「上一頁」
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--; // 頁碼減 1
+                renderTable(); // 重新渲染表格
+            }
+        }
+
+        // 5. 點擊「下一頁」
+        function nextPage() {
+            let totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++; // 頁碼加 1
+                renderTable(); // 重新渲染表格
+            }
+        }
+    </script>
+</body>
+</html>
