@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 9: 置中照片牆</title>
+    <style>
+        /* 1. 讓整體的標題、按鈕全部置中 */
+        body {
+            text-align: center; 
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        /* 2. 照片牆容器：讓裡面的照片能自動換行並置中對齊 */
+        #gallery {
+            display: flex;
+            flex-wrap: wrap;       /* 排滿自動換行 */
+            justify-content: center; /* 內容完美置中 */
+            gap: 15px;             /* 照片之間的間距 */
+            margin-top: 20px;
+        }
+
+        /* 3. 照片樣式：這就是產生「各式各樣型態」的關鍵 */
+        #gallery img {
+            height: 200px; /* 固定高度讓排版整齊 */
+            width: auto;   /* 寬度自動，就會保留原本直的或橫的比例！ */
+            filter: grayscale(100%); /* 預設黑白 */
+            transition: filter 0.3s ease; /* 變色的漸變特效 */
+            border-radius: 5px; /* 稍微加點圓角 */
+        }
+        
+        /* 滑鼠移上去時恢復彩色 */
+        #gallery img:hover {
+            filter: grayscale(0%);
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Lab#9 Using flickr API</h1>
+    
+    <button onclick="getPhotos()">Get flickr photos</button>
+    <hr>
+    
+    <div id="gallery"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
